@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DataNest — Cloud-Native Document Database</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:#ffffff;color:#001e2b;line-height:1.55;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale
+}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+button{border:none;cursor:pointer;font-family:inherit}
+
+.container{max-width:1280px;margin:0 auto;padding:0 24px}
+@media(min-width:768px){.container{padding:0 32px}}
+@media(min-width:1024px){.container{padding:0 48px}}
+
+.top-nav{
+  position:sticky;top:0;z-index:100;
+  height:64px;background:#ffffff;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;border-bottom:1px solid #e1e5e8
+}
+@media(min-width:768px){.top-nav{padding:0 32px}}
+@media(min-width:1024px){.top-nav{padding:0 48px}}
+.wordmark{
+  display:flex;align-items:center;gap:10px;
+  font-size:18px;font-weight:700;line-height:1;letter-spacing:-0.5px;
+  color:#001e2b
+}
+.wordmark-icon{
+  width:24px;height:24px;background:#00ed64;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:#001e2b;flex-shrink:0
+}
+.nav-links{display:none;list-style:none;align-items:center;gap:32px}
+@media(min-width:768px){.nav-links{display:flex}}
+.nav-links a{
+  font-size:14px;font-weight:500;line-height:1.4;letter-spacing:0;
+  color:#5c6c7a;transition:color .15s
+}
+.nav-links a:hover{color:#001e2b}
+.nav-right{display:flex;align-items:center;gap:16px}
+.nav-signin{
+  background:transparent;color:#001e2b;
+  font-size:14px;font-weight:600;line-height:1;letter-spacing:0;
+  padding:10px 16px
+}
+.nav-signin:hover{color:#5c6c7a}
+.btn-primary{
+  display:inline-flex;align-items:center;justify-content:center;
+  background:#00ed64;color:#001e2b;
+  font-size:14px;font-weight:600;line-height:1;letter-spacing:0;
+  padding:10px 22px;height:40px;border-radius:9999px;
+  transition:background .15s
+}
+.btn-primary:hover{background:#00b545}
+.btn-secondary{
+  display:inline-flex;align-items:center;justify-content:center;
+  background:transparent;color:#001e2b;
+  font-size:14px;font-weight:600;line-height:1;letter-spacing:0;
+  padding:10px 22px;height:40px;border-radius:9999px;
+  border:1px solid #c1ccd6;transition:background .15s
+}
+.btn-secondary:hover{background:#f4f7f6}
+.btn-on-dark{
+  display:inline-flex;align-items:center;justify-content:center;
+  background:#00ed64;color:#001e2b;
+  font-size:14px;font-weight:600;line-height:1;letter-spacing:0;
+  padding:10px 22px;height:40px;border-radius:9999px;
+  transition:background .15s
+}
+.btn-on-dark:hover{background:#00b545}
+.btn-secondary-on-dark{
+  display:inline-flex;align-items:center;justify-content:center;
+  background:transparent;color:#ffffff;
+  font-size:14px;font-weight:600;line-height:1;letter-spacing:0;
+  padding:10px 22px;height:40px;border-radius:9999px;
+  border:1px solid #1c2d38;transition:background .15s
+}
+.btn-secondary-on-dark:hover{background:rgba(255,255,255,.08)}
+.hamburger{
+  display:flex;flex-direction:column;gap:5px;cursor:pointer;
+  background:none;border:none;padding:8px
+}
+@media(min-width:768px){.hamburger{display:none}}
+.hamburger span{
+  display:block;width:22px;height:2px;background:#001e2b;
+  transition:transform .3s,opacity .3s;border-radius:1px
+}
+.hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.active span:nth-child(2){opacity:0}
+.hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobile-menu{
+  display:none;position:fixed;top:64px;left:0;right:0;bottom:0;
+  background:#ffffff;z-index:99;padding:48px 24px;
+  flex-direction:column;gap:8px
+}
+.mobile-menu.open{display:flex}
+.mobile-menu a{
+  font-size:16px;font-weight:500;line-height:1.4;letter-spacing:0;
+  color:#3d4f5b;text-decoration:none;
+  padding:16px 0;border-bottom:1px solid #e1e5e8
+}
+
+.hero-dark{
+  background:#001e2b;color:#ffffff;padding:120px 0
+}
+.hero-dark .container{
+  display:grid;grid-template-columns:1fr;gap:48px;align-items:center
+}
+@media(min-width:1024px){
+  .hero-dark .container{grid-template-columns:1fr 1fr;gap:64px}
+}
+.hero-content{display:flex;flex-direction:column;gap:24px}
+.hero-dark h1{
+  font-size:72px;font-weight:500;line-height:1.10;letter-spacing:-1.5px;
+  color:#ffffff
+}
+@media(max-width:767px){.hero-dark h1{font-size:36px;letter-spacing:-0.5px}}
+@media(min-width:768px)and(max-width:1023px){.hero-dark h1{font-size:48px;letter-spacing:-1px}}
+.hero-sub{
+  font-size:18px;font-weight:400;line-height:1.50;letter-spacing:0;
+  color:#a8b3bc;max-width:560px
+}
+@media(max-width:767px){.hero-sub{font-size:16px}}
+.hero-actions{display:flex;gap:16px;flex-wrap:wrap}
+
+.code-mockup{
+  background:#001e2b;border:1px solid #1c2d38;border-radius:12px;overflow:hidden;
+  box-shadow:rgba(0,30,43,0.12) 0px 12px 24px -4px
+}
+.code-mockup-header{
+  display:flex;align-items:center;gap:8px;
+  padding:16px 20px;border-bottom:1px solid #1c2d38
+}
+.code-mockup-dot{width:10px;height:10px;border-radius:50%}
+.code-mockup-dot.red{background:#ef4444}
+.code-mockup-dot.yellow{background:#f59e0b}
+.code-mockup-dot.green{background:#22c55e}
+.code-mockup-title{
+  margin-left:12px;
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:13px;font-weight:500;color:#5c6c7a
+}
+.code-mockup-body{
+  padding:20px;overflow-x:auto;
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:14px;font-weight:400;line-height:1.55;letter-spacing:0;
+  color:#a8b3bc;white-space:pre
+}
+.code-mockup-body .keyword{color:#00ed64}
+.code-mockup-body .string{color:#3b82f6}
+.code-mockup-body .number{color:#fa6e39}
+.code-mockup-body .comment{color:#5c6c7a;font-style:italic}
+.code-mockup-body .type{color:#7b3ff2}
+
+.stats-band{
+  padding:64px 0;border-top:1px solid #e1e5e8;border-bottom:1px solid #e1e5e8
+}
+.stats-grid{
+  display:grid;grid-template-columns:1fr;gap:0
+}
+@media(min-width:480px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:768px){.stats-grid{grid-template-columns:repeat(4,1fr)}}
+.stat-cell{text-align:center;padding:24px 16px}
+@media(max-width:479px){.stat-cell{border-bottom:1px solid #e1e5e8}}
+.stat-cell:not(:last-child){border-right:1px solid #e1e5e8}
+.stat-number{
+  font-size:56px;font-weight:500;line-height:1;letter-spacing:-1.5px;
+  color:#00ed64;margin-bottom:8px
+}
+@media(max-width:767px){.stat-number{font-size:40px;letter-spacing:-1px}}
+.stat-label{
+  font-size:14px;font-weight:400;line-height:1.50;letter-spacing:0;
+  color:#5c6c7a
+}
+
+.section{padding:96px 0}
+.section-header{text-align:center;margin-bottom:64px}
+.section-label{
+  display:inline-block;
+  font-size:11px;font-weight:600;line-height:1.40;letter-spacing:1px;
+  text-transform:uppercase;color:#5c6c7a;margin-bottom:16px
+}
+.section-title{
+  font-size:48px;font-weight:500;line-height:1.20;letter-spacing:-0.5px;
+  color:#001e2b;margin-bottom:16px
+}
+@media(max-width:767px){.section-title{font-size:32px;letter-spacing:-0.3px}}
+.section-desc{
+  font-size:16px;font-weight:400;line-height:1.55;letter-spacing:0;
+  color:#3d4f5b;max-width:640px;margin:0 auto
+}
+
+.features-grid{
+  display:grid;grid-template-columns:1fr;gap:24px
+}
+@media(min-width:768px){.features-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.features-grid{grid-template-columns:repeat(3,1fr)}}
+.feature-card{
+  background:#ffffff;border:1px solid #e1e5e8;border-radius:12px;
+  padding:24px;display:flex;flex-direction:column;gap:16px
+}
+.feature-icon{
+  width:40px;height:40px;display:flex;align-items:center;justify-content:center;
+  background:#f4f7f6;border-radius:8px;color:#00ed64;
+  font-size:18px;font-weight:700
+}
+.feature-title{
+  font-size:18px;font-weight:600;line-height:1.40;letter-spacing:0;
+  color:#001e2b
+}
+.feature-desc{
+  font-size:15px;font-weight:400;line-height:1.55;letter-spacing:0;
+  color:#3d4f5b
+}
+.feature-link{
+  font-size:14px;font-weight:500;line-height:1.50;letter-spacing:0;
+  color:#00684a;margin-top:auto
+}
+
+.code-section{padding:96px 0;background:#f9fbfa}
+.code-grid{
+  display:grid;grid-template-columns:1fr;gap:24px
+}
+@media(min-width:768px){.code-grid{grid-template-columns:repeat(2,1fr)}}
+.code-card{
+  background:#001e2b;border:1px solid #1c2d38;border-radius:12px;overflow:hidden
+}
+.code-card-header{
+  display:flex;align-items:center;gap:8px;
+  padding:14px 20px;border-bottom:1px solid #1c2d38
+}
+.code-card-header .code-card-dot{width:8px;height:8px;border-radius:50%}
+.code-card-header .code-card-dot.red{background:#ef4444}
+.code-card-header .code-card-dot.yellow{background:#f59e0b}
+.code-card-header .code-card-dot.green{background:#22c55e}
+.code-card-header .code-card-title{
+  margin-left:10px;
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:12px;font-weight:500;color:#5c6c7a
+}
+.code-card-body{
+  padding:20px;overflow-x:auto;
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:14px;font-weight:400;line-height:1.60;letter-spacing:0;
+  color:#a8b3bc;white-space:pre
+}
+.code-card-body .keyword{color:#00ed64}
+.code-card-body .string{color:#3b82f6}
+.code-card-body .number{color:#fa6e39}
+.code-card-body .comment{color:#5c6c7a;font-style:italic}
+.code-card-body .type{color:#7b3ff2}
+
+.pricing{padding:96px 0;background:#f9fbfa}
+.pricing-grid{
+  display:grid;grid-template-columns:1fr;gap:24px
+}
+@media(min-width:600px){.pricing-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.pricing-grid{grid-template-columns:repeat(3,1fr)}}
+.pricing-card{
+  background:#ffffff;border:1px solid #e1e5e8;border-radius:12px;
+  padding:32px;display:flex;flex-direction:column;gap:24px
+}
+.pricing-card.featured{
+  background:#e3fcef;border:2px solid #00ed64
+}
+.pricing-popular{
+  display:inline-block;
+  background:#001e2b;color:#00ed64;
+  font-size:13px;font-weight:600;line-height:1.40;letter-spacing:0;
+  padding:4px 10px;border-radius:9999px;margin-bottom:8px;align-self:flex-start
+}
+.pricing-name{
+  font-size:22px;font-weight:500;line-height:1.35;letter-spacing:0;
+  color:#001e2b
+}
+.pricing-desc{
+  font-size:15px;font-weight:400;line-height:1.50;letter-spacing:0;
+  color:#3d4f5b
+}
+.pricing-price{
+  font-size:40px;font-weight:500;line-height:1.15;letter-spacing:-1px;
+  color:#001e2b
+}
+.pricing-period{
+  font-size:14px;font-weight:400;line-height:1.50;letter-spacing:0;
+  color:#5c6c7a;margin-top:4px
+}
+.pricing-features{list-style:none;display:flex;flex-direction:column;gap:12px}
+.pricing-features li{
+  font-size:14px;font-weight:400;line-height:1.50;letter-spacing:0;
+  color:#3d4f5b;padding-left:24px;position:relative
+}
+.pricing-features li::before{
+  content:"";position:absolute;left:0;top:5px;
+  width:14px;height:14px;background:#00ed64;border-radius:50%
+}
+
+.cta-dark{
+  background:#001e2b;color:#ffffff;padding:96px 0
+}
+.cta-card{
+  text-align:center;display:flex;flex-direction:column;
+  align-items:center;gap:24px
+}
+.cta-card h2{
+  font-size:40px;font-weight:500;line-height:1.15;letter-spacing:-0.5px;
+  color:#ffffff
+}
+@media(max-width:767px){.cta-card h2{font-size:28px;letter-spacing:-0.3px}}
+.cta-card p{
+  font-size:16px;font-weight:400;line-height:1.55;letter-spacing:0;
+  color:#a8b3bc;max-width:560px
+}
+
+.footer{
+  background:#001e2b;padding:64px 0 32px
+}
+.footer-grid{
+  display:grid;grid-template-columns:1fr;gap:40px;margin-bottom:48px
+}
+@media(min-width:600px){.footer-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.footer-grid{grid-template-columns:repeat(4,1fr)}}
+.footer-col h4{
+  font-size:14px;font-weight:500;line-height:1.50;letter-spacing:0;
+  color:#ffffff;margin-bottom:16px
+}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+.footer-col a{
+  font-size:14px;font-weight:400;line-height:1.50;letter-spacing:0;
+  color:#a8b3bc;transition:color .15s
+}
+.footer-col a:hover{color:#ffffff}
+.footer-bottom{
+  margin-top:48px;padding-top:24px;
+  border-top:1px solid #1c2d38;
+  display:flex;flex-direction:column;align-items:center;gap:16px;
+  text-align:center
+}
+@media(min-width:768px){
+  .footer-bottom{flex-direction:row;justify-content:space-between}
+}
+.footer-copyright{
+  font-size:14px;font-weight:400;line-height:1.50;letter-spacing:0;
+  color:#5c6c7a
+}
+.footer-legal{display:flex;gap:16px;flex-wrap:wrap}
+.footer-legal a{
+  font-size:14px;font-weight:400;line-height:1.50;letter-spacing:0;
+  color:#5c6c7a;text-decoration:none
+}
+.footer-legal a:hover{color:#a8b3bc}
+</style>
+</head>
+<body>
+
+<nav class="top-nav" role="navigation" aria-label="Main navigation">
+  <a href="#" class="wordmark">
+    <span class="wordmark-icon">DN</span>
+    DataNest
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#docs">Docs</a></li>
+    <li><a href="#enterprise">Enterprise</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="nav-signin">Sign in</button>
+    <a href="#" class="btn-primary">Start Free</a>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation">
+  <a href="#features">Features</a>
+  <a href="#pricing">Pricing</a>
+  <a href="#docs">Docs</a>
+  <a href="#enterprise">Enterprise</a>
+  <a href="#">Sign in</a>
+  <a href="#" class="btn-primary" style="margin-top:16px;text-align:center">Start Free</a>
+</div>
+
+<section class="hero-dark" id="hero">
+  <div class="container">
+    <div class="hero-content">
+      <h1>Your data, unified. Your apps, unlimited.</h1>
+      <p class="hero-sub">DataNest is a cloud-native document database service that stores, indexes, and queries JSON documents at any scale with millisecond latency and a familiar API.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn-on-dark">Start Free</a>
+        <a href="#" class="btn-secondary-on-dark">View documentation</a>
+      </div>
+    </div>
+    <div class="code-mockup">
+      <div class="code-mockup-header">
+        <div class="code-mockup-dot red"></div>
+        <div class="code-mockup-dot yellow"></div>
+        <div class="code-mockup-dot green"></div>
+        <span class="code-mockup-title">users.js</span>
+      </div>
+      <div class="code-mockup-body"><span class="keyword">const</span> nest = <span class="keyword">await</span> DataNest.<span class="keyword">connect</span>({
+  cluster: <span class="string">"my-cluster"</span>,
+  region:  <span class="string">"us-east-1"</span>
+});
+
+<span class="keyword">const</span> db   = nest.db(<span class="string">"shop"</span>);
+<span class="keyword">const</span> col  = db.collection(<span class="string">"users"</span>);
+
+<span class="keyword">const</span> doc = {
+  name:    <span class="string">"Alice"</span>,
+  email:   <span class="string">"alice@example.com"</span>,
+  roles:   [<span class="string">"admin"</span>, <span class="string">"editor"</span>],
+  created: <span class="keyword">new</span> <span class="type">Date</span>()
+};
+
+<span class="keyword">const</span> result = <span class="keyword">await</span> col.insertOne(doc);
+<span class="comment">// { insertedId: "67f..." }</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="stats-band" id="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-cell">
+        <div class="stat-number">15M+</div>
+        <div class="stat-label">Documents indexed</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-number">99.99%</div>
+        <div class="stat-label">Uptime SLA</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-number">3.2k+</div>
+        <div class="stat-label">Production clusters</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-number">12ms</div>
+        <div class="stat-label">P99 read latency</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Platform</span>
+      <h2 class="section-title">Built for document workloads at scale</h2>
+      <p class="section-desc">From real-time apps to petabyte-scale document stores, DataNest handles the hardest problems in modern data.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">&#9889;</div>
+        <h3 class="feature-title">Schema-free documents</h3>
+        <p class="feature-desc">Store JSON documents with dynamic schemas. Evolve your data model without migrations or downtime.</p>
+        <a href="#" class="feature-link">Learn more &#8594;</a>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#9881;</div>
+        <h3 class="feature-title">Powerful query engine</h3>
+        <p class="feature-desc">Rich query language with aggregation pipelines, geospatial queries, full-text search, and vector search.</p>
+        <a href="#" class="feature-link">Learn more &#8594;</a>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#9733;</div>
+        <h3 class="feature-title">Auto-scaling clusters</h3>
+        <p class="feature-desc">Elastic compute and storage that scales from a single node to hundreds without query interruption.</p>
+        <a href="#" class="feature-link">Learn more &#8594;</a>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#9650;</div>
+        <h3 class="feature-title">Built-in replication</h3>
+        <p class="feature-desc">Automatic multi-region replication with configurable consistency levels and disaster recovery.</p>
+        <a href="#" class="feature-link">Learn more &#8594;</a>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#9998;</div>
+        <h3 class="feature-title">Change streams</h3>
+        <p class="feature-desc">Real-time event streams for every document change. Build reactive apps with push-based triggers.</p>
+        <a href="#" class="feature-link">Learn more &#8594;</a>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#9733;</div>
+        <h3 class="feature-title">Enterprise security</h3>
+        <p class="feature-desc">Encryption at rest and in transit, RBAC, audit logging, and VPC peering for compliance-ready deployments.</p>
+        <a href="#" class="feature-link">Learn more &#8594;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="code-section" id="docs">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Code examples</span>
+      <h2 class="section-title">See DataNest in action</h2>
+      <p class="section-desc">Real queries for real use cases. Copy, paste, and run against any DataNest cluster.</p>
+    </div>
+    <div class="code-grid">
+      <div class="code-card">
+        <div class="code-card-header">
+          <div class="code-card-dot red"></div>
+          <div class="code-card-dot yellow"></div>
+          <div class="code-card-dot green"></div>
+          <span class="code-card-title">aggregate.js</span>
+        </div>
+        <div class="code-card-body"><span class="keyword">const</span> orders = db.collection(<span class="string">"orders"</span>);
+
+<span class="keyword">const</span> pipeline = [
+  { <span class="string">$match</span>: { status: <span class="string">"shipped"</span> }},
+  { <span class="string">$group</span>: {
+      _id:   <span class="string">"$region"</span>,
+      total: { <span class="string">$sum</span>: <span class="string">"$amount"</span> },
+      count: { <span class="string">$sum</span>: <span class="number">1</span> }
+  }},
+  { <span class="string">$sort</span>:  { total: -<span class="number">1</span> }},
+  { <span class="string">$limit</span>: <span class="number">10</span> }
+];
+
+<span class="keyword">const</span> results = <span class="keyword">await</span> orders.aggregate(pipeline).toArray();</div>
+      </div>
+      <div class="code-card">
+        <div class="code-card-header">
+          <div class="code-card-dot red"></div>
+          <div class="code-card-dot yellow"></div>
+          <div class="code-card-dot green"></div>
+          <span class="code-card-title">indexes.js</span>
+        </div>
+        <div class="code-card-body"><span class="keyword">const</span> users = db.collection(<span class="string">"users"</span>);
+
+<span class="keyword">await</span> users.createIndex(
+  { email: <span class="number">1</span> },
+  { unique: <span class="keyword">true</span> }
+);
+
+<span class="keyword">await</span> users.createIndex(
+  { location: <span class="string">"2dsphere"</span> }
+);
+
+<span class="keyword">await</span> users.createIndex(
+  { bio: <span class="string">"text"</span> },
+  { weights: { bio: <span class="number">10</span> }}
+);
+
+<span class="comment">// Compound index for sorting</span>
+<span class="keyword">await</span> users.createIndex(
+  { created: -<span class="number">1</span>, status: <span class="number">1</span> }
+);</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Pricing</span>
+      <h2 class="section-title">Plans for every scale</h2>
+      <p class="section-desc">From prototypes to enterprise workloads. All plans include a 14-day free trial.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div>
+          <h3 class="pricing-name">Free</h3>
+          <p class="pricing-desc">Perfect for learning and small prototypes.</p>
+        </div>
+        <div>
+          <div class="pricing-price">$0</div>
+          <div class="pricing-period">forever</div>
+        </div>
+        <ul class="pricing-features">
+          <li>512 MB storage</li>
+          <li>100k reads / day</li>
+          <li>Single region</li>
+          <li>Community support</li>
+          <li>REST API access</li>
+        </ul>
+        <a href="#" class="btn-secondary" style="text-align:center">Get started free</a>
+      </div>
+      <div class="pricing-card featured">
+        <span class="pricing-popular">Most popular</span>
+        <div>
+          <h3 class="pricing-name">Flex</h3>
+          <p class="pricing-desc">For growing applications and teams.</p>
+        </div>
+        <div>
+          <div class="pricing-price">$99</div>
+          <div class="pricing-period">per month</div>
+        </div>
+        <ul class="pricing-features">
+          <li>10 GB storage</li>
+          <li>1M reads / day</li>
+          <li>Multi-region replication</li>
+          <li>Priority email support</li>
+          <li>Advanced security</li>
+          <li>99.95% SLA</li>
+        </ul>
+        <a href="#" class="btn-primary" style="text-align:center">Start Free Trial</a>
+      </div>
+      <div class="pricing-card">
+        <div>
+          <h3 class="pricing-name">Dedicated</h3>
+          <p class="pricing-desc">For mission-critical deployments at any scale.</p>
+        </div>
+        <div>
+          <div class="pricing-price">Custom</div>
+          <div class="pricing-period">tailored pricing</div>
+        </div>
+        <ul class="pricing-features">
+          <li>Unlimited storage</li>
+          <li>Unlimited reads</li>
+          <li>Dedicated infrastructure</li>
+          <li>24/7 premium support</li>
+          <li>SSO &amp; audit logging</li>
+          <li>Custom SLA</li>
+          <li>Private networking</li>
+        </ul>
+        <a href="#" class="btn-secondary" style="text-align:center">Contact sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-dark">
+  <div class="container">
+    <div class="cta-card">
+      <h2>From prototype to production, DataNest grows with you.</h2>
+      <p>Get started with DataNest in minutes. No credit card required for the first 14 days.</p>
+      <a href="#" class="btn-on-dark">Start Free</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#">Overview</a></li>
+          <li><a href="#">Features</a></li>
+          <li><a href="#">Pricing</a></li>
+          <li><a href="#">Integrations</a></li>
+          <li><a href="#">Changelog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="#">Documentation</a></li>
+          <li><a href="#">API Reference</a></li>
+          <li><a href="#">Drivers &amp; SDKs</a></li>
+          <li><a href="#">Guides</a></li>
+          <li><a href="#">Status</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Press Kit</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+          <li><a href="#">DPA</a></li>
+          <li><a href="#">SLA</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copyright">&copy; 2026 DataNest, Inc. All rights reserved.</span>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Accessibility</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+let menuOpen = false;
+
+hamburger.addEventListener('click', () => {
+  menuOpen = !menuOpen;
+  hamburger.classList.toggle('active', menuOpen);
+  mobileMenu.classList.toggle('open', menuOpen);
+});
+
+document.querySelectorAll('.mobile-menu a').forEach(link => {
+  link.addEventListener('click', () => {
+    menuOpen = false;
+    hamburger.classList.remove('active');
+    mobileMenu.classList.remove('open');
+  });
+});
+</script>
+
+</body>
+</html>
